@@ -18,7 +18,7 @@ This project provides a simple and intuitive interface for:
 ✔ View leave status (approved / pending / rejected)  
 ✔ Manager dashboard for managing requests  
 ✔ User authentication and role-based access  
-✔ Easy to run locally with SQLite
+✔ Easy to run with MySQL
 
 ## Project Rules
 
@@ -33,10 +33,17 @@ The project is built using:
 
 - **Python**  
 - **Django Framework**  
-- **SQLite** (default database)  
+- **MySQL** (database)  
 - **HTML/CSS** for basic UI
 - **JavaScript**
- 
+
+## Project Dependencies Tools
+#### This project uses the following Python and Django versions:
+   ```bash
+   Python==3.10.12
+   Django==5.2.9
+   ```
+
 ## Installation & Setup
 
 1. **Clone the repository**
