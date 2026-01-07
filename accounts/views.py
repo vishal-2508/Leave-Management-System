@@ -1,8 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-
-from django.shortcuts import render
 from rest_framework.views import APIView
 from .serializers import UserSerializers
 from rest_framework.response import Response
