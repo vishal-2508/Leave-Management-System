@@ -102,9 +102,29 @@ The project is built using:
   └── README.md                    # Project documentation
   ```
 
+
+## Visual ER Diagram
+
+   ```bash
+
+                                 +-----------------+          +---------------------+
+                                 |      User       | 1      ∞ |    LeaveRequest     |
+                                 |-----------------|----------|---------------------|
+                                 | id (PK)         |          | id (PK)             |
+                                 | username        |          | user_id (FK)        |
+                                 | email           |          | leave_type          |
+                                 | password        |          | leave_reason        |
+                                 | first_name      |          | leave_start_date    |
+                                 | last_name       |          | leave_end_date      |
+                                 | user_type       |          | leave_status        |
+                                 |                 |          | leave_remark        |
+                                 +-----------------+          +---------------------+
+
+   ```
+
 ## Postman Documentation
 
-### You can also import the Postman collection:
+#### You can also import the Postman collection:
 1. Open Postman
 2. Go to Import
 3. Paste this URL:
@@ -112,5 +132,7 @@ The project is built using:
    https://documenter.getpostman.com/view/47277153/2sBXVeDrmn
    ```
 4. Postman will load the collection with all documented endpoints.
-### You can then test all API endpoints directly from Postman.
+#### You can then test all API endpoints directly from Postman.
+
+
 
