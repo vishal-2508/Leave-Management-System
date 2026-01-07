@@ -142,4 +142,12 @@ The project is built using:
 #### You can then test all API endpoints directly from Postman.
 
 
+## Screenshots
+
+
+<!-- [![Watch the video](https://img.youtube.com/vi/RpXl9Rzfjp4/maxresdefault.jpg)](https://youtu.be/RpXl9Rzfjp4) -->
+
+
+<a href="https://youtu.be/-55dK5Lt7fk" target="_blank">Watch Video</a>
+
 
