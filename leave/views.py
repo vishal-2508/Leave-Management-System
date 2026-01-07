@@ -1,7 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
 from .models import LeaveRequest
 from .serializers import LeaveSerializer
 from rest_framework.views import APIView

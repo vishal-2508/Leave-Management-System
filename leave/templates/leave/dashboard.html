@@ -9,7 +9,7 @@
         var accessToken = localStorage.getItem('accessToken');
         if (!accessToken) {
             // Redirect to login page if not authenticated
-            window.location.replace('/login_page/');
+            window.location.replace('/');
         }
         // If authenticated, the rest of the page content will load
     </script>
@@ -48,47 +48,33 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-
 </head>
 <body>
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Leave Management System</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Leave Management System</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#"></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
-      </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-        <button type="button" style="font-weight: bold;" onclick="logoutUser()">Logout</button>
-
-      {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
-    </form>
-  </div>
-</nav>
-
-
-
-
-
-
-    
-    {% comment %} <div style="text-align: right;">
-        <button type="button" style="font-weight: bold;" onclick="logoutUser()">Logout</button>
-    </div> <br> {% endcomment %}
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item active">
+            <a class="nav-link" href="#"><span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
+        </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <button type="button" style="font-weight: bold;" onclick="logoutUser()">Logout</button>
+        </form>
+    </div>
+    </nav>
 
     <div id="managerContainer" style="display: none;">
         <div id="managerOverlay" class="overlay hidden"></div>
@@ -191,6 +177,7 @@
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('userType');
+            localStorage.removeItem('user');
             window.location.href = '/'; // Example redirect
         }
 
@@ -357,6 +344,7 @@
                 $('#createEmployeeLeaveForm').removeClass('hidden');
                 $('body').css('overflow', 'hidden');
             }
+            
             function hideCreateEmployeeLeaveForm() {
                 $('#employeeOverlay').addClass('hidden');
                 $('#createEmployeeLeaveForm').addClass('hidden');
