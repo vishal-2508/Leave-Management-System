@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 8px 16px;
+        }
+        a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+        .previous {
+        background-color: #04AA6D;
+        color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+
+    <div style="text-align: center;/* border-block: blanchedalmond; */border: 3px solid black;padding: 10px;width: 280px;margin-top: 2%;margin-left: 40%;">
+        <h2>Login page</h2>
+        <b> <p id="null_field"></p> </b>
+        <label for="username">User Name : </label>
+        <input type="text" id='username' name='username' required> <br><br>
+        <label for="password">Password : </label>
+        <input type="password" id='password' name='password' required> <br><br>
+        <button id="submitbtn" type="submit">Login</button><br><br>
+        <a href="{% url 'registration_page' %}" class="previous">Registration &raquo;</a>
+    </div>
+
+    
+    
+</body>
+</html>
+
+
+<script>
+    $(document).ready(function() {        
+        $("#submitbtn").click(function(event) {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if(username != '' &&  password != ''  ){
+                var payload = {
+                    "username" : username,
+                    "password" : password
+                }
+                $.ajax({
+                url: '/login_api/', // Replace with your API endpoint
+                method: 'POST', // HTTP method (GET, POST, PUT, DELETE, etc.)
+                dataType: 'json', // Expected data type of the response (e.g., 'json', 'xml', 'html')
+                data : payload, // Data to be sent in the request body
+                success: function(response) {
+                    // This function is executed if the request is successful
+                    localStorage.setItem('accessToken', response.access);
+                    localStorage.setItem('refreshToken', response.refresh);
+                    localStorage.setItem('userType', response.user_type);
+                    localStorage.setItem('user', response.user);
+                    window.location.replace('/leave/dashboard_page/');
+                },
+                error: function(xhr, status, error) {
+                    // This function is executed if the request fails
+                    console.error('API call failed:', status, error);
+                    // Handle the error appropriately
+                },
+                complete: function() {
+                    // This function is executed regardless of success or failure
+                    console.log('API call completed.');
+                }
+                });
+            }else{
+                $("#null_field").text("Please fill all requied field");
+            }
+        });
+    });
+
+
+</script>
+
+
+

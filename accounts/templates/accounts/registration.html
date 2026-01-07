@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Registration</title>
+    <style>
+        a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 8px 16px;
+        }
+        a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+        .previous {
+        background-color: #04AA6D;
+        color: white;
+        }
+    </style>  
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div style="text-align: center;/* border-block: blanchedalmond; */border: 3px solid black;padding: 10px;width: 280px;margin-top: 2%;margin-left: 40%;">
+
+        <h2>Registration page</h2>
+        <b> <p id="null_field"></p> </b>
+            <label for="user_type">User Type : </label>
+            {% comment %} <input type="text" id='user_type' name='user_type' required> <br><br> {% endcomment %}
+
+<select id="user_type" name="user_type" required=""> <option value="Employee"> Employee </option>  <option value="Manager"> Manager </option></select>
+
+
+            <label for="username">User Name : </label>
+            <input type="text" id='username' name='username' required> <br><br>
+            <label for="password">Password : </label>
+            <input type="password" id='password' name='password' required> <br><br>
+            <label for="email">Email : </label>
+            <input type="email" id='email' name='email'> <br><br>
+            <label for="first_name">First Name : </label>
+            <input type="text" id='first_name' name='first_name' required> <br><br>
+            <label for="last_name">Last Name : </label>
+            <input type="text" id='last_name' name='last_name' required> <br><br>
+            <button id="submitbtn" type="submit">Submit</button><br><br>
+        <a href="{% url 'login_page' %}" class="previous">&laquo; Go To Back</a>
+    </div>
+</body>
+</html>
+
+<script>
+    $(document).ready(function() {
+    $("#submitbtn").click(function(event) {
+        var user_type = $("#user_type").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var email = $("#email").val();
+        var first_name = $("#first_name").val();
+        var last_name = $("#last_name").val();
+        if(user_type != "" && username != "" && password != "" && first_name != "" && last_name != "")
+        {
+            var user_type_sentence_case = user_type.charAt(0).toUpperCase() + user_type.slice(1)
+            if(user_type_sentence_case == "Employee" || user_type_sentence_case == "Manager" ){
+                var payload = {
+                    "user_type" : user_type_sentence_case,
+                    "username" : username,
+                    "password" : password,
+                    "email" : email,
+                    "first_name" : first_name,
+                    "last_name" : last_name
+                }
+                $.ajax({
+                url: '/registration_api/', // Replace with your API endpoint
+                method: 'POST', // HTTP method (GET, POST, PUT, DELETE, etc.)
+                dataType: 'json', // Expected data type of the response (e.g., 'json', 'xml', 'html')
+                data : payload, // Data to be sent in the request body
+                success: function(response) {
+                    // This function is executed if the request is successful
+                    console.log('API call successful:', response);
+                    window.location.replace('/');
+                },
+                error: function(xhr, status, error) {
+                    // This function is executed if the request fails
+                    console.error('API call failed:', status, error);
+                    // Handle the error appropriately
+                },
+                complete: function() {
+                    // This function is executed regardless of success or failure
+                    console.log('API call completed.');
+                }
+                });
+            } else{
+                $("#null_field").text("Incorrect user type")
+
+            }
+        } else{
+            $("#null_field").text("Please fill all requied field")
+        } 
+    });
+    });
+</script>
+
+
+
+
+
+

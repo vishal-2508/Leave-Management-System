@@ -1,0 +1,17 @@
+asgiref==3.11.0
+astroid==4.0.3
+dill==0.4.0
+Django==5.2.9
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+isort==7.0.0
+mccabe==0.7.0
+platformdirs==4.5.1
+PyJWT==2.10.1
+pylint==4.0.4
+pylint-django==2.7.0
+pylint-plugin-utils==0.9.0
+sqlparse==0.5.5
+tomli==2.3.0
+tomlkit==0.13.3
+typing_extensions==4.15.0

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+        // Check authentication status
+        var accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            // Redirect to login page if not authenticated
+            window.location.replace('/login_page/');
+        }
+        // If authenticated, the rest of the page content will load
+    </script>
+
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            backdrop-filter: blur(5px); /* Blur effect */
+            -webkit-backdrop-filter: blur(5px); /* For Safari */
+            z-index: 99; /* Ensure it's above main content */
+        }
+        .project-form-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 100; /* Ensure it's above the overlay */
+        }
+        .hidden {
+            display: none;
+    }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Leave Management System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+        <button type="button" style="font-weight: bold;" onclick="logoutUser()">Logout</button>
+
+      {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
+    </form>
+  </div>
+</nav>
+
+
+
+
+
+
+    
+    {% comment %} <div style="text-align: right;">
+        <button type="button" style="font-weight: bold;" onclick="logoutUser()">Logout</button>
+    </div> <br> {% endcomment %}
+
+    <div id="managerContainer" style="display: none;">
+        <div id="managerOverlay" class="overlay hidden"></div>
+        <div id="editManagerDetailForm" class="project-form-container hidden">
+            <h2>Edit Manager Detail</h2>
+            <b> <p id="nullManagerDetail"></p> </b>
+            <label for="editStatus">Status : </label>
+            <select id="editStatus" name="editStatus">
+                <option value="Pending">Pending</option>
+                <option value="Approve">Approve</option>
+                <option value="Reject">Reject</option>
+            </select><br><br>
+            <label for="editRemark">Remark : </label>
+            <input type="text" id="editRemark" name="editRemark" ><br><br>
+            <input type="hidden" id="editManagerDetails" name="editManagerDetails" value="no set data">
+            <button type="button" onclick="saveManagerDetailChanges()">Save</button>
+            <button type="button" onclick="cancelManagerDetailEdit()">Cancel</button>
+        </div> 
+
+        <table id="managerTableId" class="display">
+            <thead>
+                <tr>
+                    <th>Sr no</th>
+                    <th>User Name</th>
+                    <th>Leave Type</th>
+                    <th>Reason</th>
+                    <th>Leave Start date</th>
+                    <th>Leave End date</th>
+                    <th>Status</th>
+                    <th>Remark</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div id="employeeContainer" style="display: none;">
+        <div id="employeeOverlay" class="overlay hidden"></div>
+        <button onclick="showCreateEmployeeLeaveForm()" style="font-weight: bold;">Leave apply</button> <br> <br>
+
+        <div id="createEmployeeLeaveForm" class="project-form-container hidden">
+            <h2>Create Leave </h2>
+            <b> <p id="nullEmployeeLeave"  style="color: red;"></p> </b>
+            <label for="leaveType">Leave Type : </label>
+            <select id="leaveType" name="leaveType">
+                <option value="Casual">Casual</option>
+                <option value="Sick">Sick</option>
+            </select><br><br>
+            <label for="reason">Reason : </label>
+            <input type="text" id="reason" name="reason" ><br><br>
+            <label for="startDate">Start Date : </label>
+            <input type="datetime-local" id="startDate" name="startDate" ><br><br>
+            <label for="endDate">End Date : </label>
+            <input type="datetime-local" id="endDate" name="endDate" ><br><br> 
+            <button id="employeeLeaveSubmitButton" type="submit">Save</button><br><br>
+            <button type="button" onclick="hideCreateEmployeeLeaveForm()">Cancel</button>
+        </div>   
+
+
+        <div id="editEmployeeDetailForm" class="project-form-container hidden">
+            <h2>Edit Employee Detail</h2>
+            <b> <p id="nullEmployeeDetail"></p> </b>
+            <label for="editLeaveType">Leave Type : </label>
+            <select id="editLeaveType" name="editLeaveType">
+                <option value="Casual">Casual</option>
+                <option value="Sick">Sick</option>
+            </select><br><br>
+            <label for="editReason">Reason : </label>
+            <input type="text" id="editReason" name="editReason" ><br><br>
+            <label for="editStartDate">Start Date : </label>
+            <input type="datetime-local" id="editStartDate" name="editStartDate" ><br><br>
+            <label for="editEndDate">End Date : </label>
+            <input type="datetime-local" id="editEndDate" name="editEndDate" ><br><br> 
+            <input type="hidden" id="editEmployeeDetails" name="editEmployeeDetails" value="no set data">
+            <button type="button" onclick="saveEmployeeDetailChanges()">Save</button>
+            <button type="button" onclick="cancelEmployeeDetailEdit()">Cancel</button>
+        </div>  
+        <table id="employeeTableId" class="display">
+            <thead>
+                <tr>
+                    <th>Sr no</th>
+                    <th>Leave Type</th>
+                    <th>Reason</th>
+                    <th>Leave Start Date</th>
+                    <th>Leave End Date</th>
+                    <th>Status</th>
+                    <th>Remark</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+</body>
+</html>
+
+    <script>
+        var userType = localStorage.getItem('userType');
+        function logoutUser() {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userType');
+            window.location.href = '/'; // Example redirect
+        }
+
+        function formatDate(dateString, editEmployee = null) {
+            // when editEmployee is null then date formate is user for display datatable.  ---> if condition exiqute
+            // use when get this formate time  --->  14/06/2024 07:47
+            if (editEmployee === null) {
+                const dateObject = new Date(dateString);
+                // We use padStart(2, '0') to ensure two digits for day, month, hour, and minute.
+                const day = String(dateObject.getUTCDate()).padStart(2, '0');
+                const month = String(dateObject.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+                const year = dateObject.getUTCFullYear();
+                const hours = String(dateObject.getUTCHours()).padStart(2, '0');
+                const minutes = String(dateObject.getUTCMinutes()).padStart(2, '0');
+                // Format the components into the desired string
+                const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+                return formattedDate;
+
+            // when we second default value then date formate is user for editEmployee Detail start, end .  ---> else condition exiqute
+            // use when get this formate time  ---> 2026-01-06T09:30
+            } else {
+                if (!dateString) return "";
+                const date = new Date(dateString);
+                const year = date.getUTCFullYear();
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const hours = String(date.getUTCHours()).padStart(2, '0');
+                const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+        }
+
+        if(userType == "Manager"){
+            // This if condition exiqute when user type is Manager
+            $("#managerContainer").show()
+            function saveManagerDetailChanges() {
+                var leave_status = $("#editStatus").val();
+                var leave_remark = $("#editRemark").val();
+                var managerDetailObjects = JSON.parse($("#editManagerDetails").val());
+                if(leave_status != ''){
+                    var payload = {
+                        "leave_status" : leave_status,
+                        "leave_remark" : leave_remark  
+                        }
+                    $.ajax({      
+                        url : `/leave/leave_api/${managerDetailObjects.id}/`, // Your server-side endpoint
+                        type : 'PUT', // Or POST if your API uses it for updates
+                        dataType: 'json', // Specify content type for JSON data
+                        data: payload, // Send updated data as JSON
+                        headers: {
+                                    "Authorization": "Bearer " + accessToken
+                                },
+                        success: function(response) {
+                            // Handle successful update (e.g., update the displayed record, close modal)
+                            console.log("Record updated successfully:", response);
+                            window.location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error updating record:", error);
+                        },
+                        complete: function() {
+                            // This function is executed regardless of success or failure
+                            console.log('API call completed.');
+                        }
+                    });
+                } else{
+                    $("#nullManagerDetail").text("Please fill all requied field");
+                } 
+            }
+
+            function cancelManagerDetailEdit() {
+                $('#managerOverlay').addClass('hidden');
+                $('#editManagerDetailForm').addClass('hidden');
+                $('body').css('overflow', 'auto');
+            }
+
+            function editManagerDetail(leaveDetails) {
+                let leaveDetailString = JSON.stringify(leaveDetails);
+                $('#managerOverlay').removeClass('hidden');
+                $('#editManagerDetailForm').removeClass('hidden');
+                $('body').css('overflow', 'hidden');
+                $("#editStatus").val(leaveDetails.leave_status);
+                $("#editRemark").val(leaveDetails.leave_remark);
+                $("#editManagerDetails").val(leaveDetailString);
+            }
+
+            $(document).ready(function() {
+                $('#managerTableId').DataTable( {
+                    ajax: {
+                        url: '/leave/leave_api/',
+                        type: 'GET', // Or 'POST', 'PUT', etc. depending on your API
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
+                        },
+                        dataSrc: ''
+                    },
+                        columns: [
+                            {
+                                data: null, // No data source for this column
+                                title: "Sr. No.",
+                                render: function (data, type, row, meta) {
+                                    return meta.row + 1; // Returns the row index + 1
+                                }
+                            },
+                            {
+                                data: 'username',
+                                title: "User Name"
+                            },
+                            {
+                                data: 'leave_type',
+                                title: "Leave Type"
+                            },
+                            
+                            
+                            {
+                                data: 'leave_reason',
+                                title: "Leave Reason"
+                            },
+                            { 
+                                data: 'leave_start_date',
+                                title: "Leave Start Date",
+                                render: function ( data, type, row) {
+                                    const formattedDate = formatDate(data);
+                                    return formattedDate;
+                                } 
+                            },
+                            { 
+                                data: 'leave_end_date',
+                                title: "Leave End Date",
+                                render: function ( data, type, row) {
+                                    const formattedDate = formatDate(data);
+                                    return formattedDate;
+                                } 
+                            },
+                            {
+                                data: 'leave_status',
+                                title: "Status"
+                            },
+                            {
+                                data: 'leave_remark',
+                                title: "Remark"
+                            },
+                            {
+                                data: null,
+                                title: "Edit",
+                                render: function (data, type, row) {
+                                    return `
+                                        <button class="btn btn-primary btn-sm edit-btn" 
+                                        style="background-color: #007bff;color:white;" 
+                                        onclick='editManagerDetail(${JSON.stringify(row)})' data-id="${row.id}" >Edit</button>
+                                    `;
+                                }
+                            }
+                        ]
+                } );
+            });
+        } 
+        
+        else {
+            // This else condition exiqute when user type is Employee
+            $("#employeeContainer").show()
+            function showCreateEmployeeLeaveForm() {
+                $('#employeeOverlay').removeClass('hidden');
+                $('#createEmployeeLeaveForm').removeClass('hidden');
+                $('body').css('overflow', 'hidden');
+            }
+            function hideCreateEmployeeLeaveForm() {
+                $('#employeeOverlay').addClass('hidden');
+                $('#createEmployeeLeaveForm').addClass('hidden');
+                $('body').css('overflow', 'auto');
+            } 
+
+            function saveEmployeeDetailChanges() {
+                var leave_type = $("#editLeaveType").val();
+                var leave_reason = $("#editReason").val();
+                var leave_start_date = $("#editStartDate").val();
+                var leave_end_date = $("#editEndDate").val();
+                var employeeDetailObjects = JSON.parse($("#editEmployeeDetails").val());
+                if(leave_type != '' &&  leave_reason != '' &&  leave_start_date != '' &&  leave_end_date != ''){
+                    var leave_start_dateObj = new Date(leave_start_date);
+                    var leave_end_dateObj = new Date(leave_end_date);
+                    if (leave_end_dateObj > leave_start_dateObj) {
+                        var payload = {
+                            "leave_type" : leave_type,
+                            "leave_reason" : leave_reason,
+                            "leave_start_date" : leave_start_date,
+                            "leave_end_date" : leave_end_date
+                            }
+                        $.ajax({      
+                            url : `/leave/leave_api/${employeeDetailObjects.id}/`, // Your server-side endpoint
+                            type : 'PUT', // Or POST if your API uses it for updates
+                            dataType: 'json', // Specify content type for JSON data
+                            data: payload, // Send updated data as JSON
+                            headers: {
+                                        "Authorization": "Bearer " + accessToken
+                                    },
+                            success: function(response) {
+                                // Handle successful update (e.g., update the displayed record, close modal)
+                                console.log("Record updated successfully:", response);
+                                window.location.reload();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error updating record:", error);
+                            },
+                            complete: function() {
+                                // This function is executed regardless of success or failure
+                                console.log('API call completed.');
+                            }
+                        });
+                    } else {  
+                        $("#nullEmployeeDetail").text("End date must be bigger than start date");
+                    }
+                } else{
+                    $("#nullEmployeeDetail").text("Please fill all requied field");
+                } 
+            }
+
+            function cancelEmployeeDetailEdit() {
+                $('#employeeOverlay').addClass('hidden');
+                $('#editEmployeeDetailForm').addClass('hidden');
+                $('body').css('overflow', 'auto');
+            }
+
+            function editEmployeeDetail(leaveDetails) {
+                let leaveDetailString = JSON.stringify(leaveDetails);
+                $('#employeeOverlay').removeClass('hidden');
+                $('#editEmployeeDetailForm').removeClass('hidden');
+                $('body').css('overflow', 'hidden');
+                $("#editLeaveType").val(leaveDetails.leave_type);
+                $("#editReason").val(leaveDetails.leave_reason);
+                $("#editStartDate").val(
+                    formatDate(leaveDetails.leave_start_date, "Yes")
+                );
+                $("#editEndDate").val(
+                    formatDate(leaveDetails.leave_end_date, "Yes")
+                );
+                $("#editEmployeeDetails").val(leaveDetailString);
+            }
+
+            function deleteEmployeeLeave(leaveId) {
+                $.ajax({
+                    url: `/leave/leave_api/${leaveId}/`, // Replace with your API endpoint
+                    method: 'DELETE', // Or 'POST', 'PUT', 'DELETE'
+                    dataType: 'json', // Expected data type from the server (e.g., 'json', 'xml', 'html')
+                    headers: {
+                                "Authorization": "Bearer " + accessToken
+                            },
+                    success: function(response) {
+                        // Handle successful response
+                        console.log('Delete successfully ..:', response);
+                        window.location.reload();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle errors
+                        console.error('Error:', textStatus, errorThrown);
+                    },
+                    complete: function() {
+                        // This function runs regardless of success or error
+                        console.log('Request complete.');
+                    }
+                });   
+            }
+
+            $(document).ready(function() {
+
+                $("#employeeLeaveSubmitButton").click(function(event) {
+                    var leave_type = $("#leaveType").val();
+                    var leave_reason = $("#reason").val();
+                    var leave_start_date = $("#startDate").val();
+                    var leave_end_date = $("#endDate").val();
+                    var user = localStorage.getItem('user');
+                    if(leave_type != "" && leave_reason != "" && leave_start_date != "" && leave_end_date != "" && user != ""){
+                        var leave_start_dateObj = new Date(leave_start_date);
+                        var leave_end_dateObj = new Date(leave_end_date);
+                        if (leave_end_dateObj > leave_start_dateObj) {
+                            var payload = {
+                                "leave_type" : leave_type,
+                                "leave_reason" : leave_reason,
+                                "leave_start_date" : leave_start_date,
+                                "leave_end_date" : leave_end_date,
+                                "user" : user
+                                }
+                            $.ajax({
+                                url: "/leave/leave_api/",
+                                method: 'POST', // HTTP method (GET, POST, PUT, DELETE, etc.)
+                                dataType: 'json', // Expected data type of the response (e.g., 'json', 'xml', 'html')
+                                data : payload,
+                                headers: {
+                                        "Authorization": "Bearer " + accessToken
+                                    },
+                                success: function(response) {
+                                    // This function is executed if the request is successful
+                                    console.log('project create successful:', response);
+                                    window.location.reload();
+                                },
+                                error: function(xhr, status, error) {
+                                    // This function is executed if the request fails
+                                    console.error('new Project create failed:', status, error);
+                                    // Handle the error appropriately
+                                },
+                                complete: function() {
+                                    // This function is executed regardless of success or failure
+                                    console.log('Project create API call completed.');
+                                }
+                                });
+                        } else {  
+                        $("#nullEmployeeLeave").text("End date must be bigger than start date");
+                        }
+                    } else{
+                        $("#nullEmployeeLeave").text("Please fill all requied field");
+                    }
+                } ) 
+
+                $('#employeeTableId').DataTable( {
+                    ajax: {
+                        url: '/leave/leave_api/',
+                        type: 'GET', // Or 'POST', 'PUT', etc. depending on your API
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
+                        },
+                        dataSrc: ''
+                    },
+                        columns: [
+                            {
+                                data: null, // No data source for this column
+                                title: "Sr. No.",
+                                render: function (data, type, row, meta) {
+                                    return meta.row + 1; // Returns the row index + 1
+                                }
+                            },
+                            {
+                                data: 'leave_type',
+                                title: "Leave Type"
+                            },
+                            
+                            
+                            {
+                                data: 'leave_reason',
+                                title: "Leave Reason"
+                            },
+                            { 
+                                data: 'leave_start_date',
+                                title: "Leave Start Date",
+                                render: function ( data, type, row) {
+                                    const formattedDate = formatDate(data);
+                                    return formattedDate;
+                                } 
+                            },
+                            { 
+                                data: 'leave_end_date',
+                                title: "Leave End Date",
+                                render: function ( data, type, row) {
+                                    const formattedDate = formatDate(data);
+                                    return formattedDate;
+                                }
+                            },
+                            {
+                                data: 'leave_status',
+                                title: "Status"
+                            },
+                            {
+                                data: 'leave_remark',
+                                title: "Remark"
+                            },
+                            {
+                                data: null,
+                                title: "Action",
+                                render: function (data, type, row) {
+                                    return `
+                                        <button class="btn btn-primary btn-sm edit-btn" 
+                                        style="background-color: #007bff;color:white;" 
+                                        onclick='editEmployeeDetail(${JSON.stringify(row)})' data-id="${row.id}" >Edit</button>
+                                        <button class="btn btn-danger btn-sm delete-btn" 
+                                        style="background-color: #f44336;color:white;" 
+                                        onclick="deleteEmployeeLeave(${row.id})" data-id="${row.id}">Delete</button>
+                                    `;
+                                }
+                            }
+                        ]
+                } );
+            });       
+        }       
+    </script>
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
