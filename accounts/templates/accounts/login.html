@@ -30,7 +30,7 @@
 
     <div style="text-align: center;/* border-block: blanchedalmond; */border: 3px solid black;padding: 10px;width: 280px;margin-top: 2%;margin-left: 40%;">
         <h2>Login page</h2>
-        <b> <p id="null_field"></p> </b>
+        <b> <p id="null_field" style="color: red;"></p> </b>
         <label for="username">User Name : </label>
         <input type="text" id='username' name='username' required> <br><br>
         <label for="password">Password : </label>
@@ -71,6 +71,8 @@
                 error: function(xhr, status, error) {
                     // This function is executed if the request fails
                     console.error('API call failed:', status, error);
+                    $("#null_field").text("Please Enter correct detail.");
+
                     // Handle the error appropriately
                 },
                 complete: function() {

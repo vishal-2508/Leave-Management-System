@@ -30,7 +30,7 @@
     <div style="text-align: center;/* border-block: blanchedalmond; */border: 3px solid black;padding: 10px;width: 280px;margin-top: 2%;margin-left: 40%;">
 
         <h2>Registration page</h2>
-        <b> <p id="null_field"></p> </b>
+        <b> <p id="null_field" style="color: red;"></p> </b>
         <label for="user_type">User Type : </label>
         <select id="user_type" name="user_type" required=""> 
             <option value="Employee"> Employee </option>  
@@ -86,6 +86,7 @@
                 error: function(xhr, status, error) {
                     // This function is executed if the request fails
                     console.error('API call failed:', status, error);
+                    $("#null_field").text("Please Enter correct detail.")
                     // Handle the error appropriately
                 },
                 complete: function() {

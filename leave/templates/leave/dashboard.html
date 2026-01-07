@@ -80,7 +80,7 @@
         <div id="managerOverlay" class="overlay hidden"></div>
         <div id="editManagerDetailForm" class="project-form-container hidden">
             <h2>Edit Manager Detail</h2>
-            <b> <p id="nullManagerDetail"></p> </b>
+            <b> <p id="nullManagerDetail" style="color: red;"></p> </b>
             <label for="editStatus">Status : </label>
             <select id="editStatus" name="editStatus">
                 <option value="Pending">Pending</option>
@@ -136,7 +136,7 @@
 
         <div id="editEmployeeDetailForm" class="project-form-container hidden">
             <h2>Edit Employee Detail</h2>
-            <b> <p id="nullEmployeeDetail"></p> </b>
+            <b> <p id="nullEmployeeDetail" style="color: red;"></p> </b>
             <label for="editLeaveType">Leave Type : </label>
             <select id="editLeaveType" name="editLeaveType">
                 <option value="Casual">Casual</option>
@@ -237,6 +237,8 @@
                         },
                         error: function(xhr, status, error) {
                             console.error("Error updating record:", error);
+                            $("#nullManagerDetail").text("Please Enter correct detail.");
+
                         },
                         complete: function() {
                             // This function is executed regardless of success or failure
@@ -344,7 +346,7 @@
                 $('#createEmployeeLeaveForm').removeClass('hidden');
                 $('body').css('overflow', 'hidden');
             }
-            
+
             function hideCreateEmployeeLeaveForm() {
                 $('#employeeOverlay').addClass('hidden');
                 $('#createEmployeeLeaveForm').addClass('hidden');
@@ -382,6 +384,8 @@
                             },
                             error: function(xhr, status, error) {
                                 console.error("Error updating record:", error);
+                                $("#nullEmployeeDetail").text("Please Enter correct detail.");
+
                             },
                             complete: function() {
                                 // This function is executed regardless of success or failure
@@ -477,6 +481,8 @@
                                 error: function(xhr, status, error) {
                                     // This function is executed if the request fails
                                     console.error('new Project create failed:', status, error);
+                                    $("#nullEmployeeLeave").text("Please Enter correct detail.");
+
                                     // Handle the error appropriately
                                 },
                                 complete: function() {

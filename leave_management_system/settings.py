@@ -77,9 +77,21 @@ WSGI_APPLICATION = 'leave_management_system.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Leave_management_db',      # The name of the database you created
+        'USER': 'vishal',          # The user you created
+        'PASSWORD': 'password', # The password for the user
+        'HOST': 'localhost',       # Or an IP address if your DB is on another server
+        'PORT': '3306',            # Default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
